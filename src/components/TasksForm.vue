@@ -1,24 +1,52 @@
 <template>
-  <div class="task-list">
-    <h1>Менеджер задач</h1>
-    <button class="add-button" @click="addTask">Добавить</button>
-    <div class="task" v-for="task in tasks" :key="task.id">
-      <div class="task-info">
-        <h3>{{ task.title }}</h3>
-        <p>{{ task.description }}</p>
-      </div>
-      <div class="task-status">
-        <span :class="'status ' + task.status">{{ statusLabels[task.status] }}</span>
-      </div>
-      <button @click="editTask(task.id)" class="edit-button">Изменить</button>
+  <n-card size="large" bordered>
+    <div class="header">
+      <n-button type="primary" size="small" @click="addTask">Добавить</n-button>
     </div>
-  </div>
+
+    <n-divider />
+
+    <n-space vertical size="medium" class="task-list">
+      <n-card
+        v-for="task in tasks"
+        :key="task.id"
+        size="small"
+        class="task-item"
+        hoverable
+        bordered
+      >
+        <n-space align="center" justify="space-between">
+          <!-- Левая часть: информация о задаче -->
+          <div class="task-info">
+            <n-text strong>{{ task.title }}</n-text>
+            <n-text class="description">{{ task.description }}</n-text>
+          </div>
+
+          <!-- Правая часть: статус и кнопка "Изменить" -->
+          <div class="task-actions">
+            <n-tag :type="statusColors[task.status]" size="small" class="task-status">
+              {{ statusLabels[task.status] }}
+            </n-tag>
+            <n-button size="small" @click="editTask(task.id)">Изменить</n-button>
+          </div>
+        </n-space>
+      </n-card>
+    </n-space>
+  </n-card>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import {
+  NButton,
+  NCard,
+  NSpace,
+  NText,
+  NTag,
+  NDivider,
+} from "naive-ui";
 
-// Список задач
+// Реактивные данные для задач
 const tasks = ref([
   {
     id: 1,
@@ -52,16 +80,22 @@ const tasks = ref([
   },
 ]);
 
-// Словарь для отображения статусов
+// Метки для статусов
 const statusLabels = {
   new: "Новая",
   "in-progress": "В работе",
   completed: "Завершена",
 };
 
-// Методы для добавления и редактирования задач
+// Цвета для статусов
+const statusColors = {
+  new: "error",
+  "in-progress": "warning",
+  completed: "success",
+};
+
+// Метод для добавления задачи
 const addTask = () => {
-  // Пример: Добавление пустой задачи
   tasks.value.push({
     id: tasks.value.length + 1,
     title: "Новая задача",
@@ -70,95 +104,45 @@ const addTask = () => {
   });
 };
 
-const editTask = (taskId) => {
-  alert(`Редактирование задачи с ID ${taskId}`);
+// Метод для редактирования задачи
+const editTask = (id) => {
+  console.log("Редактирование задачи с ID:", id);
 };
 </script>
 
 <style scoped>
-.task-list {
-  width: 100%;
-  max-width: 600px;
-  margin: 20px auto;
-  font-family: Arial, sans-serif;
-}
-
-h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.add-button {
-  background-color: #007bff;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.add-button:hover {
-  background-color: #0056b3;
-}
-
-.task {
+.header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 15px;
-  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
+}
+
+.task-list {
+  gap: 12px;
+}
+
+.task-item {
+  display: flex;
+  flex-direction: column;
 }
 
 .task-info {
-  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-h3 {
-  margin: 0;
-  font-size: 18px;
+.task-info .description {
+  font-size: 0.875rem; /* Меньший размер шрифта для описания */
+  color: var(--n-text-color-secondary); /* Вторичный цвет текста */
 }
 
-p {
-  margin: 5px 0 0;
-  color: #555;
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .task-status {
-  margin-right: 15px;
-}
-
-.status {
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.status.new {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-
-.status.in-progress {
-  background-color: #fff3cd;
-  color: #856404;
-}
-
-.status.completed {
-  background-color: #d4edda;
-  color: #155724;
-}
-
-.edit-button {
-  background-color: #6c757d;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-.edit-button:hover {
-  background-color: #5a6268;
+  margin-right: 8px; /* Отступ между статусом и кнопкой */
 }
 </style>

@@ -111,8 +111,9 @@ onUnmounted(() => {
 
 </script>
 
-<style scoped>
+<style>
 .navbar {
+  position: fixed;
   height: 50px;
   box-shadow: 2px 2px 4px grey;
   display: flex;
@@ -121,7 +122,7 @@ onUnmounted(() => {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 100%
 }
 
 .profile-button {
