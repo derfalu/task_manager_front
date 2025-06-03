@@ -1,7 +1,7 @@
 <template>
   <n-card size="large" bordered>
     <div class="header">
-      <n-button type="primary" size="small" @click="addTask">Добавить</n-button>
+      <n-button type="primary" size="small" @click="testReg">Добавить</n-button>
     </div>
 
     <n-divider />
@@ -36,78 +36,85 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import {
-  NButton,
-  NCard,
-  NSpace,
-  NText,
-  NTag,
-  NDivider,
-} from "naive-ui";
+import axios from 'axios'
+import { ref } from 'vue'
+import { NButton, NCard, NSpace, NText, NTag, NDivider } from 'naive-ui'
 
 // Реактивные данные для задач
 const tasks = ref([
   {
     id: 1,
-    title: "Купить продукты",
-    description: "Не забыть молоко и хлеб",
-    status: "new",
+    title: 'Купить продукты',
+    description: 'Не забыть молоко и хлеб',
+    status: 'new',
   },
   {
     id: 2,
-    title: "Сходить в спортзал",
-    description: "Занятие в 7 вечера",
-    status: "in-progress",
+    title: 'Сходить в спортзал',
+    description: 'Занятие в 7 вечера',
+    status: 'in-progress',
   },
   {
     id: 3,
-    title: "Написать отчёт",
-    description: "Проверить все данные",
-    status: "in-progress",
+    title: 'Написать отчёт',
+    description: 'Проверить все данные',
+    status: 'in-progress',
   },
   {
     id: 4,
-    title: "Позвонить клиенту",
-    description: "Обсудить детали проекта",
-    status: "completed",
+    title: 'Позвонить клиенту',
+    description: 'Обсудить детали проекта',
+    status: 'completed',
   },
   {
     id: 5,
-    title: "Убрать на столе",
-    description: "Разложить бумаги по папкам",
-    status: "completed",
+    title: 'Убрать на столе',
+    description: 'Разложить бумаги по папкам',
+    status: 'completed',
   },
-]);
+])
 
 // Метки для статусов
 const statusLabels = {
-  new: "Новая",
-  "in-progress": "В работе",
-  completed: "Завершена",
-};
+  new: 'Новая',
+  'in-progress': 'В работе',
+  completed: 'Завершена',
+}
 
 // Цвета для статусов
 const statusColors = {
-  new: "error",
-  "in-progress": "warning",
-  completed: "success",
-};
+  new: 'error',
+  'in-progress': 'warning',
+  completed: 'success',
+}
+
+const testReg = () => {
+  axios
+    .post('http://localhost:4000/api/register', {
+      user: { email: 'test@example.com', username: 'derfal', password: '123456' },
+    })
+    .then((response) => {
+      console.log('Успешный ответ:', response.data)
+    })
+    .catch((error) => {
+      console.error('Ошибка:', error.response?.data || error.message)
+    })
+}
 
 // Метод для добавления задачи
-const addTask = () => {
-  tasks.value.push({
-    id: tasks.value.length + 1,
-    title: "Новая задача",
-    description: "Описание задачи",
-    status: "new",
-  });
-};
+// const addTask = () => {
+//   tasks.value.push({
+//     id: tasks.value.length + 1,
+//     title: 'Новая задача',
+//     description: 'Описание задачи',
+//     status: 'new',
+//   })
+// }
 
 // Метод для редактирования задачи
 const editTask = (id) => {
-  console.log("Редактирование задачи с ID:", id);
-};
+  console.log('Редактирование задачи с ID:', id)
+}
 </script>
 
 <style scoped>
