@@ -75,6 +75,7 @@ const handleRegister = async () => {
             const { errors } = await res.json()
             message.error('Ошибка регистрации: ' + JSON.stringify(errors))
           } else {
+            console.log(res)
             message.success('Регистрация прошла успешно!')
           }
         })

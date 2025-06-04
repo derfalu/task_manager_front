@@ -34,8 +34,8 @@ const loading = ref(false)
 
 const rules = {
   login: [
-    { required: true, message: 'Введите email', trigger: 'blur' },
-    { type: 'email', message: 'Неверный формат', trigger: ['blur', 'input'] }
+    { required: true, message: 'Введите email или имя пользователя', trigger: 'blur' },
+    { min: 3, message: 'Минимум 3 символа', trigger: 'blur' }
   ],
   password: [
     { required: true, message: 'Введите пароль', trigger: 'blur' },

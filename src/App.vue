@@ -5,8 +5,8 @@
     </div> -->
   <div class="register-form">
     <n-message-provider>
-      <!-- <RegisterForm /> -->
-      <LoginForm />
+      <RegisterForm />
+      <!-- <LoginForm /> -->
     </n-message-provider>
   </div>
 </template>
