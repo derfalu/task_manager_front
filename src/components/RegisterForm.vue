@@ -1,30 +1,29 @@
 <template>
-  <n-card title="Регистрация" style="max-width: 400px; margin: auto;">
-    <n-form :model="form" :rules="rules" ref="formRef">
-      <n-form-item label="Имя пользователя" path="username">
-        <n-input v-model:value="form.username" placeholder="Введите имя пользователя" />
-      </n-form-item>
-
-      <n-form-item label="Email" path="email">
-        <n-input v-model:value="form.email" placeholder="Введите email" />
-      </n-form-item>
-
-      <n-form-item label="Пароль" path="password">
-        <n-input
-          v-model:value="form.password"
-          type="password"
-          show-password-on="click"
-          placeholder="Введите пароль"
-        />
-      </n-form-item>
-
-      <n-form-item>
-        <n-button type="primary" @click="handleRegister" :loading="loading">
-          Зарегистрироваться
-        </n-button>
-      </n-form-item>
-    </n-form>
-  </n-card>
+  <div class="auth-wrapper">
+    <n-card title="Регистрация" style="max-width: 400px; margin: auto;">
+      <n-form :model="form" :rules="rules" ref="formRef">
+        <n-form-item label="Имя пользователя" path="username">
+          <n-input v-model:value="form.username" placeholder="Введите имя пользователя" />
+        </n-form-item>
+        <n-form-item label="Email" path="email">
+          <n-input v-model:value="form.email" placeholder="Введите email" />
+        </n-form-item>
+        <n-form-item label="Пароль" path="password">
+          <n-input
+            v-model:value="form.password"
+            type="password"
+            show-password-on="click"
+            placeholder="Введите пароль"
+          />
+        </n-form-item>
+        <n-form-item>
+          <n-button type="primary" @click="handleRegister" :loading="loading">
+            Зарегистрироваться
+          </n-button>
+        </n-form-item>
+      </n-form>
+    </n-card>
+  </div>
 </template>
 
 <script setup>
@@ -71,12 +70,18 @@ const handleRegister = async () => {
       })
         .then(async (res) => {
           loading.value = false
+          const data = await res.json()
+
           if (!res.ok) {
-            const { errors } = await res.json()
+            const errors = data.errors || data.message || "Неизвестная ошибка"
             message.error('Ошибка регистрации: ' + JSON.stringify(errors))
           } else {
-            console.log(res)
+            // ✅ Сохраняем токен
+            localStorage.setItem('token', data.token)
             message.success('Регистрация прошла успешно!')
+            console.log("Сохранён токен:", data.token)
+            // 👉 Перенаправление, если нужно:
+            // router.push('/tasks')
           }
         })
         .catch(() => {

@@ -33,3 +33,13 @@ button {
   background: none;
   cursor: pointer;
 }
+
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 16px;
+  transform: translateY(-10%);
+}
+
