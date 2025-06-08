@@ -1,12 +1,14 @@
 <template>
   <n-card size="large" bordered>
     <div class="header">
-      <n-button type="primary" size="small" @click="testReg">Добавить</n-button>
+      <n-button type="primary" size="small" @click="showTaskModal = true">Добавить задачу</n-button>
     </div>
+    <AddTaskModal v-model:show="showTaskModal" />
+    <EditTaskModal v-model:show="showEditModal" :task="taskToEdit" />
 
     <n-divider />
 
-    <n-space vertical size="medium" class="task-list">
+    <n-space vertical size="medium" class="task-list" v-if="tasks.length > 0">
       <n-card
         v-for="task in tasks"
         :key="task.id"
@@ -18,7 +20,7 @@
         <n-space align="center" justify="space-between">
           <!-- Левая часть: информация о задаче -->
           <div class="task-info">
-            <n-text strong>{{ task.title }}</n-text>
+            <n-text class="task-title">{{ task.title }}</n-text>
             <n-text class="description">{{ task.description }}</n-text>
           </div>
 
@@ -32,95 +34,54 @@
         </n-space>
       </n-card>
     </n-space>
+    <div v-else class="no-tasks">
+      <n-empty description="Нет задач в этой категории" />
+    </div>
   </n-card>
 </template>
 
 <script setup>
-import axios from 'axios'
-import { ref } from 'vue'
-import { NButton, NCard, NSpace, NText, NTag, NDivider } from 'naive-ui'
+import { ref, computed } from 'vue'
+import { useTaskStore } from '@/stores/taskStore'
+import AddTaskModal from './AddTaskModal.vue'
+import EditTaskModal from './EditTaskModal.vue'
 
-// Реактивные данные для задач
-const tasks = ref([
-  {
-    id: 1,
-    title: 'Купить продукты',
-    description: 'Не забыть молоко и хлеб',
-    status: 'new',
-  },
-  {
-    id: 2,
-    title: 'Сходить в спортзал',
-    description: 'Занятие в 7 вечера',
-    status: 'in-progress',
-  },
-  {
-    id: 3,
-    title: 'Написать отчёт',
-    description: 'Проверить все данные',
-    status: 'in-progress',
-  },
-  {
-    id: 4,
-    title: 'Позвонить клиенту',
-    description: 'Обсудить детали проекта',
-    status: 'completed',
-  },
-  {
-    id: 5,
-    title: 'Убрать на столе',
-    description: 'Разложить бумаги по папкам',
-    status: 'completed',
-  },
-])
+const store = useTaskStore()
+const showTaskModal = ref(false)
+const showEditModal = ref(false)
+const taskToEdit = ref(null)
 
-// Метки для статусов
+const editTask = (id) => {
+  const task = store.selectedTasks.find((t) => t.id === id)
+  if (task) {
+    taskToEdit.value = { ...task } // создаём копию, чтобы не редактировать напрямую
+    showEditModal.value = true
+  }
+}
+
+// Используем задачи выбранной категории
+const tasks = computed(() => store.selectedTasks)
+
 const statusLabels = {
   new: 'Новая',
   'in-progress': 'В работе',
   completed: 'Завершена',
 }
 
-// Цвета для статусов
 const statusColors = {
   new: 'error',
   'in-progress': 'warning',
   completed: 'success',
-}
-
-const testReg = () => {
-  axios
-    .post('http://localhost:4000/api/register', {
-      user: { email: 'test@example.com', username: 'derfal', password: '123456' },
-    })
-    .then((response) => {
-      console.log('Успешный ответ:', response.data)
-    })
-    .catch((error) => {
-      console.error('Ошибка:', error.response?.data || error.message)
-    })
-}
-
-// Метод для добавления задачи
-// const addTask = () => {
-//   tasks.value.push({
-//     id: tasks.value.length + 1,
-//     title: 'Новая задача',
-//     description: 'Описание задачи',
-//     status: 'new',
-//   })
-// }
-
-// Метод для редактирования задачи
-const editTask = (id) => {
-  console.log('Редактирование задачи с ID:', id)
 }
 </script>
 
 <style scoped>
 .header {
   display: flex;
-  padding-bottom: 8px;
+  justify-content: end;
+  padding-top: 0;
+  margin-top: -15px;
+  /* padding-bottom: 8px; */
 }
 
 .task-list {
@@ -132,6 +93,12 @@ const editTask = (id) => {
   flex-direction: column;
 }
 
+.task-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+
 .task-info {
   display: flex;
   flex-direction: column;
@@ -139,7 +106,7 @@ const editTask = (id) => {
 }
 
 .task-info .description {
-  font-size: 0.875rem; /* Меньший размер шрифта для описания */
+  font-size: 0.85rem; /* Меньший размер шрифта для описания */
   color: var(--n-text-color-secondary); /* Вторичный цвет текста */
 }
 
@@ -151,5 +118,11 @@ const editTask = (id) => {
 
 .task-status {
   margin-right: 8px; /* Отступ между статусом и кнопкой */
+}
+
+.no-tasks {
+  padding: 40px 0;
+  display: flex;
+  justify-content: center;
 }
 </style>

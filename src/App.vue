@@ -1,18 +1,19 @@
 <template>
-  <!-- <NavBar />
-    <div class="main">
-      <router-view></router-view>
-    </div> -->
     <n-message-provider>
-    <div class="main-container">
       <router-view />
-    </div>
   </n-message-provider>
 </template>
 
 <script setup>
 // import NavBar from './components/NavBar.vue';
 import { NMessageProvider } from 'naive-ui'
+import { onMounted } from 'vue'
+import { useTaskStore } from '@/stores/taskStore'
+
+onMounted(() => {
+  const taskStore = useTaskStore()
+  taskStore.init()
+})
 </script>
 
 <style scoped>

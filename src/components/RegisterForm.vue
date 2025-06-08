@@ -29,6 +29,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useMessage } from 'naive-ui'
+import { useRouter } from 'vue-router'
+
 
 const form = ref({
   username: '',
@@ -58,6 +60,7 @@ const rules = {
 const formRef = ref(null)
 const loading = ref(false)
 const message = useMessage()
+const router = useRouter()
 
 const handleRegister = async () => {
   await formRef.value?.validate((errors) => {
@@ -76,12 +79,9 @@ const handleRegister = async () => {
             const errors = data.errors || data.message || "Неизвестная ошибка"
             message.error('Ошибка регистрации: ' + JSON.stringify(errors))
           } else {
-            // ✅ Сохраняем токен
             localStorage.setItem('token', data.token)
             message.success('Регистрация прошла успешно!')
-            console.log("Сохранён токен:", data.token)
-            // 👉 Перенаправление, если нужно:
-            // router.push('/tasks')
+            router.push('/')
           }
         })
         .catch(() => {

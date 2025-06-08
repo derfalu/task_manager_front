@@ -4,15 +4,14 @@
     <div style="margin-right: 10px;" ref="dropdownContainer">
       <!-- Dropdown -->
       <n-dropdown
+        trigger="click"
         :options="menuOptions"
-        v-model:show="isDropdownVisible"
-        trigger="manual"
         placement="bottom"
         @select="handleOptionSelect"
+        @update:show="updateDropdownVisible"
       >
         <n-button
           type="default"
-          @click="toggleDropdown"
           class="profile-button"
         >
           <div class="profile-content">
@@ -33,7 +32,7 @@
 </template>
 
 <script setup>
-import { ref, h, onMounted, onUnmounted } from "vue";
+import { ref, h } from "vue";
 import { NDropdown, NButton, NIcon } from "naive-ui";
 import { ChevronDown, ChevronUp } from "@vicons/fa";
 import {
@@ -41,11 +40,10 @@ import {
   LogOutOutline as LogoutIcon,
   PersonCircleOutline as UserIcon
 } from "@vicons/ionicons5";
+import { useRouter } from "vue-router";
 
-// Состояние видимости дропдауна
+const router = useRouter();
 const isDropdownVisible = ref(false);
-
-const dropdownContainer = ref(null);
 
 // Генерация иконки для меню
 function renderIcon(icon) {
@@ -56,14 +54,9 @@ function renderIcon(icon) {
   };
 }
 
-const handleClickOutside = (event) => {
-  if (
-    dropdownContainer.value &&
-    !dropdownContainer.value.contains(event.target)
-  ) {
-    isDropdownVisible.value = false;
-  }
-};
+function updateDropdownVisible(val) {
+  isDropdownVisible.value = val;
+}
 
 
 // Опции для меню
@@ -85,29 +78,19 @@ const menuOptions = [
   },
 ];
 
-// Логика переключения дропдауна
-const toggleDropdown = () => {
-  isDropdownVisible.value = !isDropdownVisible.value;
-};
 
 // Обработка выбора опции из дропдауна
 const handleOptionSelect = (key) => {
   if (key === "logout") {
     console.log("Logging out...");
+    localStorage.removeItem("token")
+    router.push("/login");
   } else if (key === "profile") {
     console.log("Opening profile...");
   } else if (key === "editProfile") {
     console.log("Editing profile...");
   }
 };
-
-onMounted(() => {
-  window.addEventListener("mousedown", handleClickOutside);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("mousedown", handleClickOutside);
-});
 
 </script>
 

@@ -30,11 +30,14 @@
 <script setup>
 import { ref } from 'vue'
 import { useMessage } from 'naive-ui'
-
+import { useRouter } from 'vue-router'
+import { useTaskStore }  from '@/stores/taskStore'
 const message = useMessage()
 const form = ref({ login: '', password: '' })
 const formRef = ref(null)
 const loading = ref(false)
+const router = useRouter()
+const store = useTaskStore()
 
 const rules = {
   login: [
@@ -64,10 +67,11 @@ const handleLogin = async () => {
           message.error(data.error || 'Ошибка авторизации')
         } else {
           // ✅ Сохраняем токен
-          localStorage.setItem('token', data.token)
-
+          localStorage.setItem('token', data.user.token)
+          store.setCategories(data.data.categories)
+          console.log("data", data.data)
           message.success('Вы успешно вошли')
-          console.log('Вошёл пользователь:', data.user)
+          router.push('/tasks')
 
           // (опционально) Перенаправляем, например, на страницу задач
           // router.push('/tasks')
