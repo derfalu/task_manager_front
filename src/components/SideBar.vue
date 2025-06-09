@@ -47,6 +47,14 @@
         </div>
       </div>
     </div>
+
+    <div class="sidebar-footer">
+      <n-divider />
+      <div class="bottom-action">
+        <n-button circle type="primary" size="large" @click="showChat = true"> Чат </n-button>
+        <ChatDrawer v-model:show="showChat" />
+      </div>
+    </div>
   </aside>
 </template>
 
@@ -57,9 +65,9 @@ import { useTaskStore } from '@/stores/taskStore'
 import { DotsVertical } from '@vicons/tabler'
 import AddCategoryModal from './AddCategoryModal.vue'
 import EditCategoryModal from './EditCategoryModal.vue'
+import ChatDrawer from './ChatDrawer.vue'
+const showChat = ref(false)
 
-// import AddCategoryModal from './AddCategoryModal.vue'
-// import EditCategoryModal from './EditCategoryModal.vue'
 
 const store = useTaskStore()
 const message = useMessage()
@@ -73,24 +81,24 @@ const handleCategoryAction = async (key, category) => {
     editCategory.value = category
     showEditCategoryModal.value = true
   } else if (key === 'delete') {
-      try {
-        const res = await fetch(`http://localhost:4000/api/categories/${category.id}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        })
+    try {
+      const res = await fetch(`http://localhost:4000/api/categories/${category.id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
 
-        if (!res.ok) {
-          const data = await res.json()
-          message.error(data.error || 'Ошибка при удалении категории')
-        } else {
-          store.deleteCategory(category.id) // должен быть реализован в Pinia store
-          message.success('Категория удалена')
-        }
-      } catch {
-        message.error('Ошибка подключения к серверу')
+      if (!res.ok) {
+        const data = await res.json()
+        message.error(data.error || 'Ошибка при удалении категории')
+      } else {
+        store.deleteCategory(category.id) // должен быть реализован в Pinia store
+        message.success('Категория удалена')
       }
+    } catch {
+      message.error('Ошибка подключения к серверу')
+    }
   }
 }
 </script>
@@ -106,6 +114,8 @@ const handleCategoryAction = async (key, category) => {
   height: 100%;
   box-sizing: border-box;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-header {
@@ -174,5 +184,16 @@ const handleCategoryAction = async (key, category) => {
   background-color: #d1fae5; /* зелёный фон */
   color: #065f46; /* тёмно-зелёный текст */
   font-weight: 500;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.bottom-action {
+  margin-top: auto;
+  display: flex;
+  justify-content: end;
 }
 </style>

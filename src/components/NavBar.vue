@@ -97,27 +97,53 @@ const handleOptionSelect = (key) => {
 <style>
 .navbar {
   position: fixed;
-  height: 50px;
-  box-shadow: 2px 2px 4px grey;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 56px;
+  padding: 0 24px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%
+
+  background-color: #ffffff; /* светлая тема */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid #e5e7eb;
+
+  font-family: 'Segoe UI', sans-serif;
 }
 
+
 .profile-button {
-  width: auto;
-  padding: 10px 20px;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 6px 12px;
+  transition: background-color 0.2s ease;
+}
+
+.profile-button:hover {
+  background-color: #f0fdf4; /* светло-зеленый при наведении */
+  border-radius: 6px;
 }
 
 .profile-content {
   display: flex;
   align-items: center;
-  gap: 8px; /* Расстояние между текстом и стрелкой */
+  gap: 6px;
+  font-weight: 500;
+  font-size: 14px;
 }
+
+.navbar h1 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937; /* gray-800 */
+  margin: 0;
+}
+
 
 .n-button {
   display: flex;
